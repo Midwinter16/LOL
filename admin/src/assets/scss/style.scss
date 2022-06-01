@@ -1,0 +1,182 @@
+@import './variables.scss';
+
+// 样式重置
+*{
+    box-sizing: border-box;
+    outline: none;  // 限制表单元素和链接无法高亮
+    caret-color: rgba(0,0,0,0); //去掉焦点闪烁效果
+}
+
+input,.ql-editor,textarea{
+    caret-color: rgba(0,0,0,1) !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+            appearance: none;
+          }
+
+html{
+    font-size: 13px;
+}
+
+body{
+    margin:0;
+    line-height: 1.3em;
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing:antialiased
+}
+
+a{
+    color: #999;
+    text-decoration: none;
+}
+
+
+.w-100{
+    width: 100%;
+}
+
+// 文本对齐
+@each $var in (left,center,right) {
+    .text-#{$var}{
+        text-align: $var !important;
+    }
+}
+
+// 颜色
+@each $colorKey, $color in $colors {
+    .text-#{$colorKey}{
+        color: $color;
+    }
+    .bg-#{$colorKey}{
+        background-color: $color;
+    }
+}
+
+@each $key, $value in $font-size {
+    .fs-#{$key}{
+        font-size: $value*$base-font-size;
+    }
+};
+
+// flex布局
+.d-flex {
+    display: flex;
+}
+.flex-col{
+    flex-direction: column;
+}
+.flex-1{
+    flex:1
+}
+.flex-2{
+    flex:2
+}
+.flex-3{
+    flex:3
+}
+.flex-4{
+    flex:4
+}
+.flex-5{
+    flex:5
+}
+.flex-grow-1{
+    flex-grow: 1;
+}
+.flex-shrink-1{
+    flex-shrink: 1;
+}
+.flex-wrap{
+    flex-wrap: wrap;
+}
+@each $key, $value in $flex-js {
+    .jc-#{$key}{
+        justify-content: $value;
+    }
+};
+@each $key, $value in $flex-ai {
+    .ai-#{$key}{
+        align-items: $value;
+    }
+};
+
+
+@each $stkey, $stvalue in $spacing-types {
+    @each $sskey, $ssvalue in $spacing-sizes{
+        .#{$stkey}-#{$sskey}{
+            #{$stvalue}:#{$ssvalue*$spacing-base-size}
+        }
+    }
+    @each $sskey, $ssvalue in $spacing-sizes{
+        .#{$stkey}y-#{$sskey}{
+            #{$stvalue}-top:#{$ssvalue*$spacing-base-size};
+            #{$stvalue}-bottom:#{$ssvalue*$spacing-base-size}
+        }
+    }
+    @each $sskey, $ssvalue in $spacing-sizes{
+        .#{$stkey}x-#{$sskey}{
+            #{$stvalue}-left:#{$ssvalue*$spacing-base-size};
+            #{$stvalue}-right:#{$ssvalue*$spacing-base-size}
+        }
+    }
+    @each $sdkey, $sdvalue in $spacing-direction{
+        @each $sskey, $ssvalue in $spacing-sizes{
+            .#{$stkey}#{$sdkey}-#{$sskey}{
+                #{$stvalue}-#{$sdvalue}:#{$ssvalue*$spacing-base-size}
+            }
+        }
+        
+    }
+    
+};
+// 按钮
+.btn{
+    border: none;
+    border-radius: 0.1538rem;
+    -webkit-border-radius: 0.1538rem;
+    -moz-border-radius: 0.1538rem;
+    -ms-border-radius: 0.1538rem;
+    -o-border-radius: 0.1538rem;
+    font-size: map-get($map:$font-size,$key: 'sm')*$base-font-size;
+}
+// 导航
+.nav{
+    display: flex;
+    .nav-item{
+        border-bottom:3px solid map-get($map: $colors, $key:'white' ) ;
+        .active{
+            color: map-get($map: $colors, $key:'primary' ) ;
+            padding-bottom: 0.2rem;
+            border-bottom:3px solid map-get($map: $colors, $key:'primary' ) ;
+        }
+    }
+    &.nav-inverse{
+        .nav-item{
+            border-bottom:3px solid map-get($map: $colors, $key:'primary' ) ;
+            &.active{
+                color: map-get($map: $colors, $key:'white' ) ;
+                padding-bottom: 0.1rem;
+                border-bottom:3px solid map-get($map: $colors, $key:'white' ) ;
+            }
+        }
+    }
+}
+// 鼠标指针
+.cp{
+    cursor: pointer;
+}
+// 不换行显示省略号
+.ellipsis{
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@each $dir in (left,right,bottom,top){
+    .border-#{$dir}{
+        border-#{$dir}:1px solid map-get($map: $colors, $key: 'border-color')
+    }
+}

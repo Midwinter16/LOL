@@ -1,0 +1,160 @@
+<template>
+  <div>
+    <!-- 轮播图 -->
+    <div class="swiper-top">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img class="w-100" src="../assets/images_files/swiper1.jpeg" alt="" />
+        </div>
+        <div class="swiper-slide">
+          <img class="w-100" src="../assets/images_files/swiper2.png" alt="" />
+        </div>
+        <div class="swiper-slide">
+          <img class="w-100" src="../assets/images_files/swiper3.jpeg" alt="" />
+        </div>
+        <div class="swiper-slide">
+          <img class="w-100" src="../assets/images_files/swiper4.jpeg" alt="" />
+        </div>
+        <div class="swiper-slide">
+          <img class="w-100" src="../assets/images_files/swiper5.jpeg" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 导航 -->
+    <div class="nav_bar d-flex flex-wrap mt-3 bg-white">
+      <div
+        class="nav_item d-flex flex-col ai-center my-3"
+        v-for="(item, index) in nav_list"
+        :key="index"
+      >
+        <i :class="`text-center sprite_comm icon-${item[1]} mt-1`"></i>
+        <div class="text-center nav_label fs-md pt-3 text-dark-3">
+          {{ item[0] }}
+        </div>
+      </div>
+      <div class="w-100 pt-1 bg-light d-flex ai-center flex-col">
+        <i class="sprite_topfoot icon_arrow mt-1"></i>
+        <p class="m-0 text-center px-1 fs-sm text-dark-3">收起</p>
+      </div>
+    </div>
+    <!-- 新闻资讯 -->
+    <m-card-list icon="caidan" title="新闻资讯" :categories="categories">
+      <template #item="{ category }">
+        <div
+          v-for="(news, index) in category.newsList"
+          :key="index"
+          class="notes d-flex jc-between ai-center my-2"
+        >
+          <span>{{ news.categoryName }}</span>
+          <span class="mx-2 split"></span>
+          <span class="flex-1 ellipsis pr-3">{{ news.title }}</span>
+          <span>{{ news.createdAt | date }}</span>
+        </div>
+      </template>
+    </m-card-list>
+    <!-- 英雄列表 -->
+    <m-card-list icon="yingxiong" title="英雄列表" :categories="heroes">
+      <!-- <template #item="{ category }">
+        <div
+          v-for="(news, index) in category.newsList"
+          :key="index"
+          class="notes d-flex jc-between ai-center my-2"
+        >
+          <span>{{ news.categoryName }}</span>
+          <span class="mx-2 split"></span>
+          <span class="flex-1 ellipsis pr-3">{{ news.title }}</span>
+          <span>{{ news.createdAt | date }}</span>
+        </div>
+      </template> -->
+    </m-card-list>
+  </div>
+</template>
+
+<script>
+// import { Swiper, SwiperSlide } from "swiper/vue";
+import Swiper from "swiper/bundle";
+import "swiper/css/bundle";
+import "../assets/icons/iconfont.css";
+import { getNewsList, getHeroesList } from "../../api/plugins/News.js";
+import dayjs from "dayjs";
+
+export default {
+  data() {
+    return {
+      nav_list: [
+        ["在线客服", "service"],
+        ["秩序殿堂", "rules"],
+        ["游戏资讯", "gamenews"],
+        ["峡谷之巅", "top"],
+        ["云顶之弈", "chess"],
+        ["攻略中心", "strategy"],
+        ["LOL宇宙", "universe"],
+        ["微信绑定", "wechat"],
+      ],
+      categories: [],
+      heroes: [],
+    };
+  },
+  filters: {
+    date(val) {
+      return dayjs(val).format("MM/DD");
+    },
+  },
+  methods: {
+    async initNewsList() {
+      const { data: res } = await getNewsList();
+      this.categories = res;
+    },
+    async initHeroesList() {
+      const { data: res } = await getHeroesList();
+      this.heroes = res;
+      console.log(res);
+    },
+  },
+  created() {
+    this.initNewsList();
+  },
+  mounted() {
+    // 顶部轮播图
+    const swiperTop = new Swiper(".swiper-top", {
+      speed: 400,
+      spaceBetween: 0,
+      autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      loop: true,
+    });
+  },
+};
+</script>
+
+<style lang="scss">
+@import "../assets/scss/_variables.scss";
+
+.nav_bar {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  .nav_item {
+    width: 25%;
+    i {
+      transform: scale(1.5);
+    }
+    border-right: 1px solid map-get($colors, "border-color");
+    &:nth-of-type(4n) {
+      border-right: none;
+    }
+  }
+}
+.icon_arrow {
+  transform: rotate(180deg) scale(2);
+}
+
+.split {
+  width: 1px;
+  height: 1rem;
+  background-color: map-get($map: $colors, $key: "black");
+}
+</style>
