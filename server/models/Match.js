@@ -7,20 +7,50 @@ const schema = mongoose.Schema({
   red: {
     club: { type: mongoose.SchemaType.ObjectId, ref: "Club" },
     score: { type: Number },
-    top: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    jug: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    mid: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    bot: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    sub: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    top: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    jug: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    mid: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    bot: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    sub: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
   },
   blue: {
     club: { type: mongoose.SchemaType.ObjectId, ref: "Club" },
     score: { type: Number },
-    top: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    jug: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    mid: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    bot: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
-    sub: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    top: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    jug: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    mid: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    bot: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
+    sub: {
+      player: { type: mongoose.SchemaType.ObjectId, ref: "Player" },
+      hero: { type: mongoose.SchemaType.ObjectId, ref: "Hero" },
+    },
   },
 });
 

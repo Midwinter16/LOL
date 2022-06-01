@@ -1,14 +1,14 @@
 <template>
-  <div class="skin-list"> 
-    <ul class="d-flex flex-wrap" style="padding: 0;">
+  <div class="skin-list">
+    <ul class="d-flex flex-wrap" style="padding: 0">
       <li
         v-for="item in clubs"
         :key="item._id"
         class="d-flex flex-col ai-center cp my-3"
-        style="width:25%"
+        style="width: 25%"
       >
         <div class="front skin-item flex-1">
-          <img style="max-height: 10rem;width:auto" :src="item.icon" />
+          <img style="max-height: 10rem; max-width: 100%" :src="item.icon" />
           <div class="screen d-flex flex-col jc-center ai-center">
             <router-link
               tag="i"
