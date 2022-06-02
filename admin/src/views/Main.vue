@@ -56,7 +56,7 @@
             <template slot="title">比赛</template>
             <el-menu-item index="/matches/create">新建比赛</el-menu-item>
             <el-menu-item index="/matches/matching">现有比赛</el-menu-item>
-            <el-menu-item index="/matches/list">比赛列表</el-menu-item>
+            <el-menu-item index="/matches/list">比赛历史</el-menu-item>
           </el-menu-item-group>
           <el-menu-item-group>
             <template slot="title">广告位</template>

@@ -5,10 +5,12 @@ Vue.use(Vuex);
 
 import Player from "./modules/Player";
 import Hero from "./modules/Hero";
+import Match from "./modules/Match";
 
 export default new Vuex.Store({
   modules: {
     Player,
     Hero,
+    Match,
   },
 });

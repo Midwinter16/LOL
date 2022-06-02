@@ -11,6 +11,9 @@ Vue.prototype.$http = bashURL;
 
 import "./assets/scss/style.scss";
 
+import Time from "@/components/countTime.vue";
+Vue.component("c-time", Time);
+
 Vue.mixin({
   computed: {
     uploadURL() {

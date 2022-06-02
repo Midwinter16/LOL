@@ -1,93 +1,126 @@
 <template>
-  <div class="skin-list">
-    <ul class="d-flex flex-wrap">
-      <li
-        v-for="item in skins"
+  <div class="matching-list">
+    <strong class="fs-xxl">比赛历史</strong>
+    <div class="d-flex flex-col">
+      <!-- 比赛列表 -->
+      <div
+        class="match-item mt-3 mb-5"
+        style="border-radius: 5px"
+        v-for="item in matchList"
         :key="item._id"
-        class="d-flex flex-col ai-center cp mx-2"
       >
-        <div class="front skin-item">
-          <img style="width: 100%" :src="item.cover" />
-          <div class="screen d-flex flex-col jc-center ai-center">
-            <router-link
-              tag="i"
-              :to="`/skins/edit/${item._id}`"
-              class="text-white mb-3 iconfont icon-bianji"
-            ></router-link>
-            <i
-              @click="deleteSkin(item._id, item.name)"
-              class="text-white mt-3 iconfont icon-shanchu"
-            ></i>
+        <div
+          style="background-color: #151517; border-radius: 7px"
+          class="d-flex jc-around p-2 board-top"
+        >
+          <!-- 蓝方 -->
+          <div style="max-height: 6rem; width: 8rem" class="d-flex jc-center">
+            <img style="height: 100%" :src="item.blue.club.icon" alt="" />
+          </div>
+          <img
+            style="width: 3rem; height: 2rem; align-self: center"
+            src="../assets/images/win.png"
+            alt=""
+            :class="item.winer == 'red' ? 'hidden' : ''"
+          />
+          <!-- 比分 -->
+          <div class="score jc-around ai-center d-flex flex-col">
+            <!-- 计分板 -->
+            <div class="score-board d-flex ai-center">
+              <strong
+                style="border-radius: 7px"
+                class="blue-score fs-xxl p-3 bg-light"
+                >{{ item.blue.score }}</strong
+              >
+              <strong class="text-white mx-3">:</strong>
+              <strong
+                style="border-radius: 7px"
+                class="red-score fs-xxl p-3 bg-light"
+                >{{ item.red.score }}</strong
+              >
+            </div>
+          </div>
+          <img
+            style="width: 3rem; height: 2rem; align-self: center"
+            src="../assets/images/win.png"
+            alt=""
+            :class="item.winer == 'blue' ? 'hidden' : ''"
+          />
+          <!-- 红方 -->
+          <div style="max-height: 6rem; width: 8rem" class="d-flex jc-center">
+            <img style="height: 100%" :src="item.red.club.icon" alt="" />
           </div>
         </div>
-        <span class="fs-xs mt-1">{{ item.name }}</span>
-      </li>
-    </ul>
+        <!-- 比赛信息 -->
+        <div
+          class="infos pt-3 pb-1 bg-dark-2 d-flex flex-col ai-center jc-around text-white"
+        >
+          <strong class="">结束于 {{ item.end | format1 }}</strong>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { getSkinList, deleteSkinId } from "@/api/admin/skins.js";
 import "@/assets/icons/iconfont.css";
+import { mapActions, mapMutations, mapState } from "vuex";
+import dayjs from "dayjs";
 export default {
   data() {
-    return {
-      skins: [],
-    };
+    return { dialogVisible: false, matchId: 0 };
+  },
+  computed: {
+    ...mapState({
+      matchList: (state) => state.Match.matchOverList,
+      match: (state) => state.Match.match,
+    }),
   },
   methods: {
-    async initSkins() {
-      const { data: res } = await getSkinList();
-      this.skins = res;
+    ...mapActions("Match", {
+      getMatchList: "getMatchList",
+      getMatchIdInfo: "getMatchIdInfo",
+    }),
+    ...mapMutations("Match", {
+      update: "update",
+    }),
+    // 展开操作
+    selectMatch(id) {
+      this.matchId = id;
+      this.dialogVisible = true;
     },
-    deleteSkin(id, name) {
-      this.$confirm(`是否删除"${name}"皮肤`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      }).then(async () => {
-        await deleteSkinId(id);
-        this.$message({
-          type: "success",
-          message: "删除成功!",
-        });
-        this.initSkins();
-      });
+  },
+  filters: {
+    format1(val) {
+      return dayjs(parseInt(val)).format("YYYY-MM-DD HH:mm:ss");
     },
   },
   created() {
-    this.initSkins();
+    this.getMatchList();
   },
 };
 </script>
 
 <style lang="scss">
-li {
-  list-style: none;
-}
-.skin-item {
+.match-item {
   position: relative;
-  width: 7rem;
-  height: auto;
-  .screen {
+  .board-top {
+    position: relative;
+    z-index: 999;
+  }
+  .infos {
     position: absolute;
-    top: 0;
+    top: 90%;
+    border-radius: 7px;
     width: 100%;
-    height: 165px;
-    opacity: 0;
-    background-color: #000;
-    i {
-      text-align: center;
-    }
-    .icon-shanchu:hover {
-      opacity: 0.3;
-    }
-    .icon-bianji:hover {
-      opacity: 0.3;
-    }
+    height: 3rem;
+    transition: all 0.5s ease;
   }
-  &:hover .screen {
-    opacity: 0.6;
-  }
+}
+.dialog {
+  position: relative;
+}
+.hidden {
+  opacity: 0;
 }
 </style>

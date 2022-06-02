@@ -2,9 +2,24 @@
   <div class="about">
     <el-form @submit.native.prevent="save">
       <h1>{{ id ? "编辑" : "新建" }}比赛</h1>
+      <el-form-item label="赛制">
+        <el-select v-model="model.BOnum">
+          <el-option :value="1" label="BO1"></el-option>
+          <el-option :value="3" label="BO3"></el-option>
+          <el-option :value="5" label="BO5"></el-option>
+        </el-select>
+      </el-form-item>
       <div class="d-flex jc-between">
         <div class="blue flex-1">
           <h1>蓝色方</h1>
+          <el-form-item v-if="this.id" label="蓝色方胜场">
+            <el-input
+              type="number"
+              style="width: 100px"
+              v-model="model.blue.score"
+              :max="model.WINnum"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="战队">
             <el-select v-model="model.blue.club">
               <el-option
@@ -163,6 +178,14 @@
         </div>
         <div class="red flex-1">
           <h1>红色方</h1>
+          <el-form-item v-if="this.id" label="红色方胜场">
+            <el-input
+              style="width: 100px"
+              type="number"
+              v-model="model.red.score"
+              :max="model.WINnum"
+            ></el-input>
+          </el-form-item>
           <el-form-item label="战队">
             <el-select v-model="model.red.club">
               <el-option
@@ -332,7 +355,11 @@
 
 <script>
 import { getClubList } from "../api/admin/clubs.js";
-import { updateMatch, createNewMatch } from "../api/admin/matches.js";
+import {
+  updateMatch,
+  createNewMatch,
+  getMatchIdInfo,
+} from "../api/admin/matches.js";
 import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   props: {
@@ -406,9 +433,10 @@ export default {
       });
       setTimeout(() => {
         checks.forEach((ele) => {
-          ele.style.border = "1px solid gray";
+          ele.style.border = "1px solid #DCDFE6";
         });
       }, 3000);
+      // 表单验证;
       if (!valid) {
         this.$message.warning("请完善表单再提交");
         return;
@@ -416,19 +444,24 @@ export default {
       if (this.id) {
         await updateMatch(this.id, this.model);
       } else {
-        // 保存后设置开始时间
+        // 保存后设置开始时间、赛制完成状态以及胜场次数
         this.model.start = Date.parse(new Date());
+        this.model.WINnum = Math.ceil(this.model.BOnum / 2);
+        this.model.over = false;
+        this.model.red.score = 0;
+        this.model.blue.score = 0;
         await createNewMatch(this.model);
       }
-      this.$router.push("/skins/list");
+      this.$router.push("/matches/matching");
       this.$message({
         type: "success",
         message: "保存成功",
       });
     },
     async fetch() {
-      const { data: res } = await getSkinIdInfo(this.id);
+      const { data: res } = await getMatchIdInfo(this.id);
       this.model = res;
+      console.log(res);
     },
     async initClubList() {
       const { data: res } = await getClubList();
@@ -444,11 +477,23 @@ export default {
     this.getHeroList();
   },
   watch: {
-    "model.blue.club"(val) {
-      this.filterByBlue(val);
+    "model.blue.club": {
+      immediate: true,
+      handler(val) {
+        // 其实这个异步是可以写在vuex里面的，但是我懒
+        setTimeout(() => {
+          this.filterByBlue(val);
+        }, 10);
+      },
     },
-    "model.red.club"(val) {
-      this.filterByRed(val);
+    "model.red.club": {
+      immediate: true,
+      handler(val) {
+        // 同上
+        setTimeout(() => {
+          this.filterByRed(val);
+        }, 10);
+      },
     },
   },
 };
