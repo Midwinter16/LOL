@@ -16,7 +16,12 @@
           :on-success="afterUpload"
           :headers="getAuthHeaders()"
         >
-          <img style="width:auto" v-if="model.icon" :src="model.icon" class="avatar" />
+          <img
+            style="width: auto"
+            v-if="model.icon"
+            :src="model.icon"
+            class="avatar"
+          />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -29,16 +34,19 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <ul class="teamer-list d-flex flex-wrap" style="padding:0">
-          <li style='width:12.50%' v-for="item in playerList" :key='item._id' class="d-flex flex-1 flex-col ai-center">
-            <img :src="item.icon" alt="">
-            <span class="fs-xl">{{item.name}}</span>
+        <ul class="teamer-list d-flex flex-wrap" style="padding: 0">
+          <li
+            v-for="item in playerList"
+            :key="item._id"
+            class="teamer d-flex flex-1 flex-col ai-center"
+          >
+            <img :src="item.icon" alt="" />
+            <span class="fs-xl">{{ item.name }}</span>
           </li>
         </ul>
       </el-form-item>
       <el-form-item
-        ><el-button type="primary" native-type="submit"
-          >提交</el-button
+        ><el-button type="primary" native-type="submit">提交</el-button
         ><el-button type="warning" @click="back()"
           >返回</el-button
         ></el-form-item
@@ -60,12 +68,12 @@ export default {
   data() {
     return {
       model: {},
-      playerList:[]
+      playerList: [],
     };
   },
   methods: {
-    back(){
-      this.$router.back()
+    back() {
+      this.$router.back();
     },
     // 提交
     async save() {
@@ -91,12 +99,12 @@ export default {
     },
     async initPlayerList() {
       const { data: res } = await getPlayerList();
-  console.log(res);
-      this.playerList=res.filter(ele=>{
-        if(ele.club._id == this.id){
-          return ele
+      console.log(res);
+      this.playerList = res.filter((ele) => {
+        if (ele.club._id == this.id) {
+          return ele;
         }
-      })
+      });
     },
   },
   created() {
@@ -107,7 +115,7 @@ export default {
 </script>
 
 <style scoped>
-li{
+li {
   list-style: none;
 }
 .upload /deep/ .avatar-uploader .el-upload {
@@ -137,5 +145,8 @@ li{
   opacity: 0;
   display: inline-block;
   transform: scale(0.7);
+}
+.teamer img {
+  width: 10rem;
 }
 </style>

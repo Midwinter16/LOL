@@ -59,6 +59,9 @@ module.exports = (app) => {
     if (req.Model.modelName === "Player") {
       queryOptions.populate = "club";
     }
+    if (req.Model.modelName === "Match") {
+      queryOptions.populate = "blue.club red.club";
+    }
 
     // limit代表一次获取300个，find获取所有数据库的数据
     const items = await req.Model.find().setOptions(queryOptions).limit(300);

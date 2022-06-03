@@ -23,7 +23,7 @@
           <el-option
             v-for="item in positions"
             :key="item._id"
-            :value="item.name"
+            :value="item.label"
             :label="item.name"
             >{{ item.name }}</el-option
           >
@@ -63,11 +63,7 @@
 
       <el-form-item style="width: 400px" label="所属战队">
         <el-select v-model="model.club">
-        <el-option
-            value="未入队"
-            label="未入队"
-            >未入队</el-option
-          >
+          <el-option value="未入队" label="未入队">未入队</el-option>
           <el-option
             v-for="item in clubList"
             :key="item._id"
@@ -100,8 +96,7 @@
       </el-form-item>
 
       <el-form-item
-        ><el-button type="primary" native-type="submit"
-          >提交</el-button
+        ><el-button type="primary" native-type="submit">提交</el-button
         ><el-button type="warning" @click="back()"
           >返回</el-button
         ></el-form-item
@@ -112,14 +107,14 @@
 
 <script>
 import "../assets/icons/iconfont.css";
-import { getHeroList } from "@/api/admin/heroes.js";
-import { getClubList,getClubIdInfo,updateClub } from "@/api/admin/clubs.js";
+import { getClubList } from "@/api/admin/clubs.js";
 import {
   getPlayerList,
   createNewPlayer,
   updatePlayer,
-  getPlayerIdInfo
+  getPlayerIdInfo,
 } from "@/api/admin/players.js";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
   props: {
     id: {
@@ -128,34 +123,39 @@ export default {
   },
   data() {
     return {
+      already: false,
       model: {
         status: "",
         number: "",
         club: "",
       },
-      club_id:'',
+      club_id: "",
       clubList: [],
-      heroList: {},
       positions: [
         {
           _id: 3943441,
           name: "上路",
+          label: "top",
         },
         {
           _id: 3943442,
           name: "打野",
+          label: "jug",
         },
         {
           _id: 3943443,
           name: "中路",
+          label: "mid",
         },
         {
           _id: 3943444,
           name: "下路",
+          label: "bot",
         },
         {
           _id: 3943445,
           name: "辅助",
+          label: "sub",
         },
       ],
       status: [
@@ -178,9 +178,24 @@ export default {
       ],
     };
   },
+  computed: {
+    ...mapState({
+      heroList: (state) => state.Hero.heroList,
+      first: (state) => state.Player.judgeFirst,
+    }),
+  },
   methods: {
-    back(){
-      this.$router.back()
+    ...mapActions("Hero", {
+      getHeroList: "getHeroList",
+    }),
+    ...mapActions("Player", {
+      getAllPlayers: "getAllPlayers",
+    }),
+    ...mapMutations("Player", {
+      filterByClubAndPosition: "filterByClubAndPosition",
+    }),
+    back() {
+      this.$router.back();
     },
     // 提交
     async save() {
@@ -201,10 +216,6 @@ export default {
       const { data: res } = await getPlayerIdInfo(this.id);
       this.model = res;
     },
-    async initHeroesList() {
-      const { data: res } = await getHeroList();
-      this.heroList = res;
-    },
     async initClubsList() {
       const { data: res } = await getClubList();
       this.clubList = res;
@@ -224,14 +235,16 @@ export default {
     },
   },
   watch: {
-    'model.club':{
-      deep:true,
-      handler(val){
-        if(val === '未入队'){
-          this.model.status = '待入队'
-        }else if(val != ''){
-          this.model.status = '在役'
-        }
+    "model.club"(val) {
+      // 当状态已经被确定时直接返回,同时设定一个触发already来控制第一次加载model不会修改状态
+      if (this.model.status && !this.already) {
+        this.already = true;
+        return;
+      }
+      if (val === "未入队") {
+        this.model.status = "待入队";
+      } else if (val != "") {
+        this.model.status = "在役";
       }
     },
   },
@@ -239,9 +252,13 @@ export default {
     // 获取到分类options的选项数据
     this.id && this.fetch();
     // 获取到分类的符文种类
-    this.initHeroesList();
+
     this.initPlayerNumber();
     this.initClubsList();
+
+    // vuex
+    this.getHeroList();
+    this.getAllPlayers();
   },
 };
 </script>
