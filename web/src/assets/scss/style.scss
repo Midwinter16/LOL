@@ -209,14 +209,50 @@ a{
 }
 
 .sprite_topfoot{
-        background: url('../topfoot-spr.png') no-repeat 0 0;
-        background-size: 15.6154rem 6.8462rem;
-        display: inline-block;
-        &.icon_arrow{
-            background-position: 94.087% 49.704%;
-            width: 0.6154rem;
-            height: 0.3846rem;
-        }
+    background: url('../topfoot-spr.png') no-repeat 0 0;
+    background-size: 15.6154rem 6.8462rem;
+    display: inline-block;
+    &.icon_arrow{
+        background-position: 94.087% 49.704%;
+        width: 0.6154rem;
+        height: 0.3846rem;
+    }
+}
+
+.sprite-position{
+    background: url('../images_files/spr_info_overview.png') no-repeat 0 0;
+    background-size: 2.1875rem 1.875rem;
+    display: inline-block;
+    transform: scale(4);
+    -webkit-transform: scale(4);
+    -moz-transform: scale(4);
+    -ms-transform: scale(4);
+    -o-transform: scale(4);
+    &.icon-sub{
+        background-position: 0 0;
+        width: 0.6875rem;
+        height: 0.5625rem;
+    }
+    &.icon-top{
+        background-position: 54% 0;
+        width: 0.625rem;
+        height: 0.625rem;
+    }
+    &.icon-jug{
+        background-position: 100% 0;
+        width: 0.5625rem;
+        height: 0.625rem;
+    }
+    &.icon-mid{
+        background-position: 52.941% 58.537%;
+        width: 0.5625rem;
+        height: 0.5625rem;
+    }
+    &.icon-bot{
+        background-position: 0 57.5%;
+        width: 0.625rem;
+        height: 0.625rem;
+    }
 }
 // 鼠标指针
 .cp{

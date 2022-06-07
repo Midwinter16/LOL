@@ -103,7 +103,7 @@
       </div>
     </c-card-2>
     <el-dialog
-      title="提示"
+      title="装备详情"
       :visible.sync="dialogVisible"
       width="70%"
       :before-close="handleClose"

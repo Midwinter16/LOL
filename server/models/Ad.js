@@ -3,12 +3,8 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
   name: { type: String },
-  items: [
-    {
-      image: { type: String },
-      url: { type: String },
-    },
-  ],
+  cover: { type: String },
+  date: { type: String },
 });
 
-module.exports = mongoose.model("Ads", schema);
+module.exports = mongoose.model("Ad", schema);

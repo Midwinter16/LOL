@@ -3,24 +3,11 @@
     <!-- 轮播图 -->
     <div class="swiper swiperTop">
       <div class="swiper-wrapper">
-        <div class="swiper-slide">
-          <img class="w-100" src="../assets/images_files/swiper1.jpeg" alt="" />
-        </div>
-        <div class="swiper-slide">
-          <img class="w-100" src="../assets/images_files/swiper2.png" alt="" />
-        </div>
-        <div class="swiper-slide">
-          <img class="w-100" src="../assets/images_files/swiper3.jpeg" alt="" />
-        </div>
-        <div class="swiper-slide">
-          <img class="w-100" src="../assets/images_files/swiper4.jpeg" alt="" />
-        </div>
-        <div class="swiper-slide">
-          <img class="w-100" src="../assets/images_files/swiper5.jpeg" alt="" />
+        <div class="swiper-slide" v-for="item in adsList" :key="item._id">
+          <img class="w-100" :src="item.cover" alt="" />
         </div>
       </div>
     </div>
-
     <!-- 导航 -->
     <c-nav
       name="mainNav"
@@ -64,7 +51,7 @@
             :to="`/heroes/${item._id}`"
             v-for="(item, index) in foldStatus
               ? category.heroList
-              : category.heroList.slice(0, 8)"
+              : category.heroList.slice(0, 10)"
             :key="index"
             class="cp notes p-1 d-flex flex-col jc-between ai-center my-2"
             style="width: 20%"
@@ -87,6 +74,7 @@ import "swiper/css/bundle";
 import "../assets/icons/iconfont.css";
 import { getNewsList, getHeroesList } from "../api/plugins/News.js";
 import dayjs from "dayjs";
+import { mapState, mapActions } from "vuex";
 
 export default {
   data() {
@@ -120,7 +108,7 @@ export default {
         {
           title: "攻略中心",
           icon: "strategy",
-          link: "strategy",
+          link: "strategy-center",
         },
         {
           title: "LOL宇宙",
@@ -146,6 +134,9 @@ export default {
     },
   },
   methods: {
+    ...mapActions("News", {
+      getAdsList: "getAdsList",
+    }),
     async initNewsList() {
       const { data: res } = await getNewsList();
       this.categories = res;
@@ -157,19 +148,25 @@ export default {
       this.isHeroLoad = true;
     },
   },
+  computed: {
+    ...mapState({
+      adsList: (state) => state.News.adsList,
+    }),
+  },
   created() {
     this.initNewsList();
     this.initHeroesList();
+    // 初始化广告位信息
+    this.getAdsList();
   },
   mounted() {
     // 顶部轮播图
-    const swiper = new Swiper(".swiperTop", {
+    new Swiper(".swiperTop", {
       speed: 400,
       spaceBetween: 0,
       autoplay: {
-        delay: 2000,
+        delay: 5000,
         disableOnInteraction: false,
-        pauseOnMouseEnter: true,
       },
       loop: true,
     });

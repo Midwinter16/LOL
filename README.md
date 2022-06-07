@@ -94,6 +94,20 @@ npm run serve
 
 使用通用接口的方法减少避免重复书写类似的接口操作
 
+# 部分页面展示
+
+### 主页面
+
+
+
+### 英雄详情页
+
+![image-20220607185716685](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607185716685.png)![image-20220607185750663](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607185750663.png)
+
+### 装备界面
+
+![image-20220607191203934](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607191203934.png)
+
 # 更新日志
 
 ## version1.2.0
@@ -269,3 +283,32 @@ actions: {
 ### 代码
 
 往后的数据都使用vuex管理
+
+## version1.2.7
+
+### web页面
+
+比赛页面已经完成
+
+- 呈现正在比赛，比赛中以及完成比赛三种列表
+- 呈现双方队员头像
+
+将news页面的滚动栏大图改成广告位，根据广告发布时间来展示5个最新的广告/公告
+
+英雄详情页添加分路图标
+
+修改了英雄攻略中按照攻略数量从多到少进行排序
+
+攻略中心数据转到VUEX管理
+
+### 后台
+
+英雄编辑页面
+
+- 英雄顺/逆风装备选择修改为限制6件
+- 装备选择增加分类
+- 搭档名称优化
+- 为英雄添加分路属性
+
+
+

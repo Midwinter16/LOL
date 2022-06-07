@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- 基础信息 -->
-    <div class="bg-white hero-detail p-3">
+    <div class="hero-detail p-3 text-white" style="background-color: #000">
       <div class="basic-info d-flex jc-between">
         <div class="flex-1 swiper swiper-skins">
           <div class="swiper-wrapper">
@@ -28,9 +28,18 @@
             </div>
           </div>
         </div>
-        <div class="info-right p-2 flex-1 d-flex flex-col jc-start">
-          <strong class="fs-xxxl">{{ model.title }}</strong>
+        <div class="info-right p-1 flex-1 d-flex flex-col jc-start">
+          <strong class="fs-xxxl">{{ model.title }} </strong>
           <span class="fs-xxl">{{ model.name }}</span>
+          <div class="tag">
+            <span
+              class="p-2 mr-2 text-white"
+              v-for="tag in model.categories"
+              :key="tag._id"
+              >{{ tag.name }}</span
+            >
+          </div>
+
           <Rating
             v-if="model.scores"
             title="难度"
@@ -51,13 +60,27 @@
             title="生存"
             :rating="model.scores.survive"
           ></Rating>
-          <div class="tag">
-            <span
-              class="p-2 mr-2 text-white"
-              v-for="tag in model.categories"
-              :key="tag._id"
-              >{{ tag.name }}</span
-            >
+          <div class="position d-flex jc-around pt-2" style="margin: 0">
+            <div
+              v-if="model.positions.includes('上单')"
+              class="sprite-position icon-top w-100"
+            ></div>
+            <div
+              v-if="model.positions.includes('打野')"
+              class="sprite-position icon-jug w-100"
+            ></div>
+            <div
+              v-if="model.positions.includes('中路')"
+              class="sprite-position icon-mid w-100"
+            ></div>
+            <div
+              v-if="model.positions.includes('下路')"
+              class="sprite-position icon-bot w-100"
+            ></div>
+            <div
+              v-if="model.positions.includes('辅助')"
+              class="sprite-position icon-sub w-100"
+            ></div>
           </div>
         </div>
       </div>
@@ -190,6 +213,7 @@ export default {
       model: {
         scores: [],
         skills: [],
+        positions: [],
       },
       selectIndex: 0,
     };
@@ -203,7 +227,6 @@ export default {
   methods: {
     async initHeroInfo() {
       const { data: res } = await getHeroDetail(this.id);
-      console.log(res);
       this.model = res;
     },
     changeSwiperActive(val) {

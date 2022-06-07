@@ -19,6 +19,8 @@ import NewsItem from "@/components/NewsItem.vue";
 Vue.component("c-news-item", NewsItem);
 import Card2 from "@/components/Card2.vue";
 Vue.component("c-card-2", Card2);
+import CountTime from "@/components/CountTime";
+Vue.component("c-time", CountTime);
 
 import { Dialog, Button, Input } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";

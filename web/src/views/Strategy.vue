@@ -19,7 +19,7 @@
       <div class="hero-icon d-flex px-4 jc-around">
         <div
           class="hero-item d-flex flex-col ai-center cp"
-          v-for="item in heroList"
+          v-for="item in recomList"
           :key="item._id"
           @click="active = item._id"
         >
@@ -51,18 +51,15 @@
       <c-news-item
         class="px-4"
         :showHero="true"
-        :news="moreStrategy"
+        :news="allStrategies"
       ></c-news-item>
     </c-card>
   </div>
 </template>
 
 <script>
-import {
-  getNewsList,
-  getAllHeroes,
-  getAllArticle,
-} from "@/api/plugins/Strategy.js";
+import { getNewsList, getAllArticle } from "@/api/plugins/Strategy.js";
+import { mapState, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -78,57 +75,34 @@ export default {
           link: "items/runes",
         },
       ],
-      strategies: [],
-      moreStrategy: [],
       heroList: [],
       relatedStrategy: [],
-      hots: [],
       active: 0,
     };
   },
   methods: {
-    async initArticle() {
-      const { data: res } = await getNewsList();
-      let prepro = res.filter((ele) => {
-        if (ele.name === "攻略") {
-          return ele;
-        }
-      })[0].newsList;
-      // 将置顶提前
-      let top = prepro.filter((ele) => ele.topStatus);
-      let bot = prepro.filter((ele) => !ele.topStatus);
-      let articleList = [...top, ...bot];
-      this.strategies = [...top, ...bot];
-      // 对热点资讯排序
-      this.hots = articleList.sort((a, b) => b.clicks - a.clicks).slice(0, 3);
-    },
-    async initHeroes() {
-      const { data: res } = await getAllHeroes();
-      this.heroList = res;
-      // 初始化active，获取strategies内容
-      this.active = res[0]._id;
-      this.resetRelatedStrategy(this.active);
-    },
+    ...mapActions("Heroes", {
+      getHeroesList: "getHeroesList",
+    }),
+    ...mapActions("Articles", {
+      getAllArticle: "getAllArticle",
+    }),
     resetRelatedStrategy(val) {
-      this.heroList.some((ele) => {
+      this.recomList.some((ele) => {
         if (ele._id === val) {
           this.relatedStrategy = ele.relatedStrategies.slice(0, 3);
           return true;
         }
       });
     },
-    async initMoreStrategy() {
-      const { data: res } = await getAllArticle();
-      let prepro = res.reduce((temp, ele) => {
-        let result = ele.categories.some((cat) => {
-          if (cat.name === "攻略") {
-            return true;
-          }
-        });
-        return result ? temp.concat(ele) : temp;
-      }, []);
-      this.moreStrategy = prepro;
-    },
+  },
+  computed: {
+    ...mapState({
+      recomList: (state) => state.Heroes.recomList,
+      initId: (state) => state.Heroes.initId,
+      allStrategies: (state) => state.Articles.allStrategies,
+      hots: (state) => state.Articles.hots,
+    }),
   },
   watch: {
     // 监听active，更新strategies
@@ -137,9 +111,14 @@ export default {
     },
   },
   created() {
-    this.initArticle();
-    this.initHeroes();
-    this.initMoreStrategy();
+    // vuex
+    this.getHeroesList();
+    this.getAllArticle();
+  },
+  mounted() {
+    setTimeout(() => {
+      this.resetRelatedStrategy(this.initId);
+    }, 100);
   },
 };
 </script>

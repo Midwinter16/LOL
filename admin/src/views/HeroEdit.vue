@@ -37,6 +37,17 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="位置">
+            <el-select multiple v-model="model.positions">
+              <el-option
+                :label="item.name"
+                :value="item.name"
+                v-for="item in positions"
+                :key="item._id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="难度">
             <el-rate
               show-score
@@ -70,25 +81,47 @@
             ></el-rate>
           </el-form-item>
           <el-form-item label="顺风出装">
-            <el-select multiple v-model="model.items_adv">
-              <el-option
-                :label="item.name"
-                :value="item._id"
-                v-for="item in items"
-                :key="item._id"
+            <el-select
+              style="width: 600px"
+              multiple
+              :multiple-limit="6"
+              v-model="model.items_adv"
+            >
+              <el-option-group
+                v-for="group in equipList"
+                :key="group._id"
+                :label="group.name"
               >
-              </el-option>
+                <el-option
+                  :label="item.name"
+                  :value="item._id"
+                  v-for="(item, index) in group.list"
+                  :key="item._id + index"
+                >
+                </el-option>
+              </el-option-group>
             </el-select>
           </el-form-item>
           <el-form-item label="逆风出装">
-            <el-select multiple v-model="model.items_dis">
-              <el-option
-                :label="item.name"
-                :value="item._id"
-                v-for="item in items"
-                :key="item._id"
+            <el-select
+              style="width: 600px"
+              multiple
+              :multiple-limit="6"
+              v-model="model.items_dis"
+            >
+              <el-option-group
+                v-for="group in equipList"
+                :key="group._id"
+                :label="group.name"
               >
-              </el-option>
+                <el-option
+                  :label="item.name"
+                  :value="item._id"
+                  v-for="(item, index) in group.list"
+                  :key="item._id + index"
+                >
+                </el-option>
+              </el-option-group>
             </el-select>
           </el-form-item>
 
@@ -201,7 +234,7 @@
               <el-form-item label="英雄">
                 <el-select filterable v-model="item.hero">
                   <el-option
-                    :label="item.title"
+                    :label="`${item.title}-${item.name}`"
                     :value="item._id"
                     v-for="item in heroes"
                     :key="item._id"
@@ -248,7 +281,7 @@ import {
   getHeroList,
 } from "@/api/admin/heroes.js";
 import { getCategoryList } from "@/api/admin/categories.js";
-import { getEquipList } from "@/api/admin/equips.js";
+import { mapState, mapActions } from "vuex";
 export default {
   props: {
     id: {
@@ -267,14 +300,33 @@ export default {
         skills: [],
       },
       categories: {},
-      items: {},
       heroes: {},
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false,
+      positions: [
+        {
+          name: "上路",
+        },
+        {
+          name: "打野",
+        },
+        {
+          name: "中路",
+        },
+        {
+          name: "下路",
+        },
+        {
+          name: "辅助",
+        },
+      ],
     };
   },
   methods: {
+    ...mapActions("Equip", {
+      getEquipList: "getEquipList",
+    }),
     // 提交
     async save() {
       // 判断是更新还是创建
@@ -294,7 +346,6 @@ export default {
       const { data: res } = await getHeroIdInfo(this.id);
       // 使用assign的目的是因为一开始如果英雄数据为空，是没有scores这个对象的，尽管model中可以初始化scores，但是会被后来的res直接赋值给剔除，所以使用assign可以保证有scores这个对象，以免引用scores.difficult会出（can not read difficult of undefined）之类的错误
       this.model = Object.assign({}, this.model, res);
-      console.log(Object.assign({}, this.model, res));
     },
     afterUpload(res) {
       this.$set(this.model, "icon", res.url);
@@ -311,22 +362,24 @@ export default {
       });
       this.categories = prepro;
     },
-    async fetchItems() {
-      const { data: res } = await getEquipList();
-      this.items = res;
-    },
     async initHeroesList() {
       const { data: res } = await getHeroList();
       this.heroes = res;
     },
   },
+  computed: {
+    ...mapState({
+      equipList: (state) => state.Equip.equipList,
+    }),
+  },
   created() {
     // 获取物品列表和分类列表
     this.fetchCategoires();
-    this.fetchItems();
     this.initHeroesList();
     // 获取到分类options的选项数据
     this.id && this.fetch();
+    // 从vuex中获取装备列表
+    this.getEquipList();
   },
 };
 </script>

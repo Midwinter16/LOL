@@ -1,12 +1,17 @@
 <template>
   <div>
-    <el-table :data="list">
+    <el-table
+      :data="list"
+      :default-sort="{ prop: 'date', order: 'descending' }"
+    >
       <el-table-column
         show-overflow-tooltip
         prop="_id"
         label="ID"
         width="120px"
       ></el-table-column>
+      <el-table-column prop="date" label="日期" sortable width="180">
+      </el-table-column>
       <el-table-column prop="name" label="名字"> </el-table-column>
       <el-table-column fixed="right" label="操作" width="180">
         <template slot-scope="scope">
@@ -31,6 +36,7 @@
 
 <script>
 import { getAdsList, deleteListId } from "@/api/admin/ads.js";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -38,6 +44,9 @@ export default {
     };
   },
   methods: {
+    format(val) {
+      return dayjs(val).format("YYYY-MM-DD HH:mm:ss");
+    },
     async fetch() {
       const { data: res } = await getAdsList("");
       this.list = res;

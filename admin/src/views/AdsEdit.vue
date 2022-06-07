@@ -1,49 +1,23 @@
 <template>
   <div class="about">
-    <el-form @submit.native.prevent="save">
+    <el-form @submit.native.prevent="save" label-width="120px">
       <h1>{{ id ? "编辑" : "新建" }}广告位</h1>
       <el-form-item label="广告名字">
         <el-input v-model="model.name"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button @click="model.items.push({})"
-          ><i class="el-icon-plus"></i> 添加广告位</el-button
+      <el-form-item label="广告图标" class="upload">
+        <el-upload
+          class="avatar-uploader"
+          :headers="getAuthHeaders()"
+          :action="uploadURL"
+          :show-file-list="false"
+          :on-success="afterUpload"
         >
-        <el-row
-          v-for="(item, index) in model.items"
-          :key="index"
-          style="flex-wrap: wrap"
-          type="flex"
-        >
-          <el-col :md="24">
-            <el-form-item label="广告链接URL">
-              <el-input v-model="item.url"></el-input>
-            </el-form-item>
-            <p>图标</p>
-            <el-form-item class="upload">
-              <el-upload
-                class="avatar-uploader"
-                :action="uploadURL"
-                :show-file-list="false"
-                :on-success="(res) => $set(item, 'image', res.url)"
-                :headers="getAuthHeaders()"
-              >
-                <!-- afterUpload指的是在上传完毕之后触发的方法 -->
-                <!-- action是指上传的地址 -->
-                <img v-if="item.image" :src="item.image" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </el-upload>
-            </el-form-item>
-            <el-form-item>
-              <el-button
-                type="danger"
-                size="small"
-                @click="model.items.splice(index, 1)"
-                >删除</el-button
-              >
-            </el-form-item>
-          </el-col>
-        </el-row>
+          <!-- afterUpload指的是在上传完毕之后触发的方法 -->
+          <!-- action是指上传的地址 -->
+          <img v-if="model.cover" :src="model.cover" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </el-form-item>
       <el-form-item
         ><el-button type="primary" native-type="submit"
@@ -75,6 +49,7 @@ export default {
       if (this.id) {
         await updateList(this.id, this.model);
       } else {
+        this.model.date = Date.parse(new Date());
         await createNewList(this.model);
       }
       this.$router.push("/ads/list");
@@ -87,6 +62,9 @@ export default {
     async fetch() {
       const { data: res } = await getListIdInfo(this.id);
       this.model = Object.assign({}, this.model, res);
+    },
+    afterUpload(res) {
+      this.$set(this.model, "cover", res.url);
     },
   },
   created() {
@@ -116,8 +94,8 @@ export default {
   text-align: center;
 }
 .upload /deep/ .avatar {
-  width: 7rem;
-  height: 7rem;
   display: block;
+  height: 15rem;
+  width: auto;
 }
 </style>

@@ -197,7 +197,7 @@ export default {
         this.$router.push("/matches/list");
       } else {
         this.$message.success("比赛已结束");
-        this.$router.push("/matches/matching");
+        this.$router.go(0);
       }
     },
   },

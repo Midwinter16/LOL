@@ -7,6 +7,8 @@ module.exports = (app) => {
   const Article = require("../../models/Article");
   const Rune = require("../../models/Rune");
   const Equip = require("../../models/Equip");
+  const Match = require("../../models/Match");
+  const Ad = require("../../models/Ad");
 
   //   下面这个方法可以直接使用mongdb来获取模型，但是会报错，先不使用
   //   const mongoose = require("mongoose");
@@ -154,6 +156,11 @@ module.exports = (app) => {
     res.send(cates);
   });
 
+  router.get("/hero/list", async (req, res) => {
+    const heroes = await Hero.find().populate("relatedStrategies");
+    res.send(heroes);
+  });
+
   router.get("/heroes/allhero", async (req, res) => {
     const heroes = await Hero.find().populate("relatedStrategies").limit(6);
     res.send(heroes);
@@ -190,8 +197,23 @@ module.exports = (app) => {
     res.send(data);
   });
 
+  // 获取装备详情
   router.get("/items/equips", async (req, res) => {
     const data = await Equip.find().populate("level");
+    res.send(data);
+  });
+
+  // 获取比赛列表
+  router.get("/matches/list", async (req, res) => {
+    const data = await Match.find().populate(
+      "blue.club red.club blue.bot.hero blue.mid.hero blue.jug.hero blue.top.hero blue.sub.hero blue.bot.player blue.mid.player blue.jug.player blue.top.player blue.sub.player red.bot.hero red.mid.hero red.jug.hero red.top.hero red.sub.hero red.bot.player red.mid.player red.jug.player red.top.player red.sub.player"
+    );
+    res.send(data);
+  });
+
+  // 获取广告列表
+  router.get("/ads/list", async (req, res) => {
+    const data = await Ad.find();
     res.send(data);
   });
 

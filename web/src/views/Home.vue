@@ -47,6 +47,7 @@ import "swiper/css/bundle";
 import News from "@/views/News.vue";
 import Strategy from "@/views/Strategy.vue";
 import Competition from "@/views/Competition.vue";
+
 export default {
   data() {
     return {
@@ -59,6 +60,7 @@ export default {
       this.$refs.list.swiper.slideTo(val);
     },
   },
+
   mounted() {
     const swiperMain = new Swiper(".swiper-main", {
       speed: 400,
@@ -74,6 +76,7 @@ export default {
     // 加载页面时active初始值;
     this.active = this.$refs.list.swiper.activeIndex;
   },
+
   components: {
     News,
     Strategy,

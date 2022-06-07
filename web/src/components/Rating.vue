@@ -66,6 +66,6 @@ img {
   margin-right: 0.7rem;
 }
 .title {
-  font-size: 20px;
+  font-size: 18px;
 }
 </style>
