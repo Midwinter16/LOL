@@ -102,11 +102,11 @@ npm run serve
 
 ### 英雄详情页
 
-![image-20220607185716685](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607185716685.png)![image-20220607185750663](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607185750663.png)
+![image-20220607185716685](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607185716685.png)![image-20220607185750663](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607185750663.png)
 
 ### 装备界面
 
-![image-20220607191203934](C:\Users\Midwinter16\AppData\Roaming\Typora\typora-user-images\image-20220607191203934.png)
+![image-20220607191203934](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607191203934.png)
 
 # 更新日志
 
