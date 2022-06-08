@@ -40,26 +40,26 @@
             >
           </div>
 
-          <Rating
+          <c-rating
             v-if="model.scores"
             title="难度"
             :rating="model.scores.difficult"
-          ></Rating>
-          <Rating
+          ></c-rating>
+          <c-rating
             v-if="model.scores"
             title="攻击"
             :rating="model.scores.attack"
-          ></Rating>
-          <Rating
+          ></c-rating>
+          <c-rating
             v-if="model.scores"
             title="技能"
             :rating="model.scores.skills"
-          ></Rating>
-          <Rating
+          ></c-rating>
+          <c-rating
             v-if="model.scores"
             title="生存"
             :rating="model.scores.survive"
-          ></Rating>
+          ></c-rating>
           <div class="position d-flex jc-around pt-2" style="margin: 0">
             <div
               v-if="model.positions.includes('上单')"
@@ -106,7 +106,7 @@
       <div class="swiper-wrapper">
         <div class="swiper-slide">
           <!-- 技能 -->
-          <CardCom icon="jineng" title="技能描述">
+          <c-card-com icon="jineng" title="技能描述">
             <div class="show-skills" v-if="model.skills.length != 0">
               <div class="m-3 skills-icon d-flex jc-around">
                 <div
@@ -141,9 +141,9 @@
             <div v-if="model.skills.length != 0" class="pt-2 px-3">
               {{ model.skills[selectIndex].description }}
             </div>
-          </CardCom>
+          </c-card-com>
           <!-- 顺风装备 -->
-          <CardCom v-if="model.items_adv" icon="jian" title="顺风出装">
+          <c-card-com v-if="model.items_adv" icon="jian" title="顺风出装">
             <div class="d-flex px-2">
               <img
                 style="width: 12%"
@@ -152,11 +152,12 @@
                 :key="item._id"
                 :src="item.icon"
                 :alt="item.name"
+                @click="showEquip(item._id)"
               />
             </div>
-          </CardCom>
+          </c-card-com>
           <!-- 逆风装备 -->
-          <CardCom v-if="model.items_dis" icon="jian" title="逆风出装">
+          <c-card-com v-if="model.items_dis" icon="jian" title="逆风出装">
             <div class="d-flex px-2">
               <img
                 style="width: 12%"
@@ -165,11 +166,12 @@
                 :key="item._id"
                 :src="item.icon"
                 :alt="item.name"
+                @click="showEquip(item._id)"
               />
             </div>
-          </CardCom>
+          </c-card-com>
           <!-- 搭档 -->
-          <CardCom v-if="model.partner" icon="hezuohuoban" title="最佳搭档">
+          <c-card-com v-if="model.partner" icon="hezuohuoban" title="最佳搭档">
             <div class="partner">
               <div
                 class="d-flex jc-between mb-2"
@@ -187,13 +189,29 @@
                 </div>
               </div>
             </div>
-          </CardCom>
+          </c-card-com>
         </div>
         <div class="swiper-slide">
-          <div class="m-5 p-5 fs-xxxl">敬请期待</div>
+          <div class="bg-white my-3 py-3 fs-lg">
+            <c-news-item
+              v-if="relatedStrategy.length != 0"
+              class="px-4"
+              :news="relatedStrategy"
+              :showTop="false"
+            ></c-news-item>
+            <div class="text-center" v-else>敬请期待该英雄攻略</div>
+          </div>
         </div>
       </div>
     </div>
+    <el-dialog :title="equipsName" :visible.sync="dialogVisible" width="70%">
+      <span>{{ equipsDesc }}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -201,10 +219,9 @@
 import Swiper from "swiper/bundle";
 import "swiper/css/bundle";
 import { getHeroDetail } from "../api/plugins/News";
-import Rating from "@/components/Rating";
+import { getEquipinfo } from "../api/plugins/Item";
 import "../assets/icons/iconfont.css";
-import CardCom from "@/components/CardCom";
-import Card from "@/components/Card.vue";
+import { mapState, mapActions, mapMutations } from "vuex";
 
 export default {
   data() {
@@ -216,6 +233,9 @@ export default {
         positions: [],
       },
       selectIndex: 0,
+      dialogVisible: false,
+      equipsDesc: "",
+      equipsName: "",
     };
   },
   props: {
@@ -224,7 +244,18 @@ export default {
       required: true,
     },
   },
+  computed: {
+    ...mapState({
+      relatedStrategy: (state) => state.Articles.relatedStrategy,
+    }),
+  },
   methods: {
+    ...mapActions("Articles", {
+      getAllArticle: "getAllArticle",
+    }),
+    ...mapMutations("Articles", {
+      initRelatedStrategy: "initRelatedStrategy",
+    }),
     async initHeroInfo() {
       const { data: res } = await getHeroDetail(this.id);
       this.model = res;
@@ -232,19 +263,30 @@ export default {
     changeSwiperActive(val) {
       this.$refs.list.swiper.slideTo(val);
     },
+    async showEquip(val) {
+      const { data: res } = await getEquipinfo(val);
+      this.equipsDesc = res.description;
+      this.equipsName = res.name;
+      this.dialogVisible = true;
+    },
   },
   watch: {
     id() {
       this.initHeroInfo();
     },
+    "model.name"() {
+      window.scrollTo(0, 0);
+      // 延迟加载
+      setTimeout(() => {
+        this.initRelatedStrategy(this.model.name);
+      }, 100);
+    },
   },
   created() {
     this.initHeroInfo();
-  },
-  components: {
-    Rating,
-    CardCom,
-    Card,
+
+    // vuex
+    this.getAllArticle();
   },
   mounted() {
     const swiperHero = new Swiper(".swiper-hero", {
@@ -254,7 +296,7 @@ export default {
     swiperHero.on("slideChange", () => {
       this.active = this.$refs.list.swiper.activeIndex;
     });
-    const swiperSkin = new Swiper(".swiper-skins", {
+    new Swiper(".swiper-skins", {
       speed: 400,
       spaceBetween: 50,
     });

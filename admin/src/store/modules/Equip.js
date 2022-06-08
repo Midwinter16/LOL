@@ -26,6 +26,10 @@ export default {
   },
   mutations: {
     initEquipList(state, val) {
+      // 初始化;
+      state.equipList.forEach((ele) => {
+        ele.list = [];
+      });
       val.forEach((ele) => {
         switch (ele.level.name) {
           case "传说":

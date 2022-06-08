@@ -2,7 +2,7 @@
   <div>
     <router-link
       tag="div"
-      :to="`article/${item._id}`"
+      :to="`/article/${item._id}`"
       class="cardItem d-flex jc-between mb-5"
       v-for="item in news"
       :key="item._id"
@@ -37,14 +37,17 @@ export default {
       type: Array,
       required: true,
     },
+    // 控制是否显示置顶
     showTop: {
       type: Boolean,
       default: true,
     },
+    // 控制是否显示阅读量
     showClicks: {
       type: Boolean,
       default: false,
     },
+    // 控制是否显示相关英雄
     showHero: {
       type: Boolean,
       default: false,

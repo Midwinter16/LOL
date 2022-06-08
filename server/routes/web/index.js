@@ -191,15 +191,21 @@ module.exports = (app) => {
     res.send(data);
   });
 
-  // 获取符文详情
+  // 获取符文列表
   router.get("/items/runes", async (req, res) => {
     const data = await Rune.find().populate("category");
     res.send(data);
   });
 
-  // 获取装备详情
+  // 获取装备列表
   router.get("/items/equips", async (req, res) => {
     const data = await Equip.find().populate("level");
+    res.send(data);
+  });
+
+  // 获取单个装备详情
+  router.get("/items/equips/:id", async (req, res) => {
+    const data = await Equip.findById(req.params.id).populate("level");
     res.send(data);
   });
 

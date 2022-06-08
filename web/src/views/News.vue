@@ -20,7 +20,7 @@
       v-if="isNewsLoad"
       icon="caidan"
       title="新闻资讯"
-      :categories="categories"
+      :categories="classAllArticle"
     >
       <template #item="{ category }">
         <router-link
@@ -42,7 +42,7 @@
       v-if="isHeroLoad"
       icon="yingxiong"
       title="英雄列表"
-      :categories="heroes"
+      :categories="classHeroList"
     >
       <template #item="{ category }">
         <div class="d-flex px-4 flex-wrap">
@@ -51,20 +51,30 @@
             :to="`/heroes/${item._id}`"
             v-for="(item, index) in foldStatus
               ? category.heroList
-              : category.heroList.slice(0, 10)"
+              : category.heroList.slice(0, 8)"
             :key="index"
             class="cp notes p-1 d-flex flex-col jc-between ai-center my-2"
-            style="width: 20%"
+            style="width: 25%"
           >
             <img style="width: 100%" :src="item.icon" alt="" />
             <span class="fs-xs">{{ item.title }}</span>
           </router-link>
         </div>
         <div class="w-100 pt-1 d-flex ai-center flex-col">
-          <p class="m-0 text-center px-1 fs-sm text-dark-3">展示更多</p>
+          <p class="m-0 text-center px-1 fs-xl text-dark-3">展示更多</p>
         </div>
       </template>
     </c-card-list>
+    <!-- 所有资讯 -->
+    <c-card :isShowMore="false" title="全部资讯" icon="redian">
+      <c-news-item
+        class="px-4"
+        :showClicks="false"
+        :showTop="false"
+        :news="limitList"
+      ></c-news-item>
+      <div class="text-center fs-lg" id="tips">{{ tips }}</div>
+    </c-card>
   </div>
 </template>
 
@@ -72,7 +82,6 @@
 import Swiper from "swiper/bundle";
 import "swiper/css/bundle";
 import "../assets/icons/iconfont.css";
-import { getNewsList, getHeroesList } from "../api/plugins/News.js";
 import dayjs from "dayjs";
 import { mapState, mapActions } from "vuex";
 
@@ -121,11 +130,12 @@ export default {
           link: "wechat",
         },
       ],
-      categories: [],
-      heroes: [],
       isHeroLoad: false,
       isNewsLoad: false,
       foldStatus: false,
+      limit: 0,
+      limitList: [],
+      tips: "下拉刷新",
     };
   },
   filters: {
@@ -137,27 +147,45 @@ export default {
     ...mapActions("News", {
       getAdsList: "getAdsList",
     }),
-    async initNewsList() {
-      const { data: res } = await getNewsList();
-      this.categories = res;
-      this.isNewsLoad = true;
-    },
-    async initHeroesList() {
-      const { data: res } = await getHeroesList();
-      this.heroes = res;
-      this.isHeroLoad = true;
-    },
+    ...mapActions("Articles", {
+      getAllArticle: "getAllArticle",
+    }),
+    ...mapActions("Heroes", {
+      getHeroesList: "getHeroesList",
+    }),
   },
   computed: {
     ...mapState({
       adsList: (state) => state.News.adsList,
+      classAllArticle: (state) => state.Articles.classAllArticle,
+      classHeroList: (state) => state.Heroes.classHeroList,
+      allArticle: (state) => state.Articles.allArticle,
     }),
   },
+  watch: {
+    classAllArticle() {
+      this.isNewsLoad = true;
+    },
+    classHeroList() {
+      this.isHeroLoad = true;
+    },
+    limit: {
+      handler() {
+        setTimeout(() => {
+          let min = Math.min(this.limit, this.allArticle.length - 1);
+          this.limitList = this.allArticle.slice(0, min);
+        }, 1000);
+      },
+    },
+  },
   created() {
-    this.initNewsList();
-    this.initHeroesList();
+    // vuex
     // 初始化广告位信息
     this.getAdsList();
+    // 初始化文章
+    this.getAllArticle();
+    // 初始化英雄列表
+    this.getHeroesList();
   },
   mounted() {
     // 顶部轮播图
@@ -170,6 +198,46 @@ export default {
       },
       loop: true,
     });
+    setTimeout(() => {
+      this.limit = 5;
+    }, 1000);
+    // 节流监听滚动距离
+    let throttle = (func, time) => {
+      let timer = null;
+      return function () {
+        if (!timer) {
+          timer = setTimeout(() => {
+            func();
+            timer = null;
+          }, time);
+        }
+      };
+    };
+    window.onscroll = throttle(() => {
+      // 节流作用
+      let timer = null;
+      // 获取tips距离顶部高度
+      let ViewHeight = document.querySelector("#tips").offsetTop;
+
+      //为了保证兼容性，这里取两个值，哪个有值取哪一个
+      //scrollTop就是触发滚轮事件时滚轮的高度
+      var scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      if (scrollTop > 190) {
+        this.isNewsLoad = true;
+      }
+      if (scrollTop + 790 >= ViewHeight && !timer && this.tips != "加载完成") {
+        this.tips = "加载中";
+        timer = setTimeout(() => {
+          this.limit += 5;
+          if (this.limit > this.allArticle.length) {
+            this.tips = "加载完成";
+          } else {
+            this.tips = "下拉刷新";
+          }
+        }, 1000);
+      }
+    }, 100);
   },
 };
 </script>

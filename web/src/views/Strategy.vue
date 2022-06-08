@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import { getNewsList, getAllArticle } from "@/api/plugins/Strategy.js";
 import { mapState, mapActions } from "vuex";
 export default {
   data() {
@@ -77,7 +76,6 @@ export default {
       ],
       heroList: [],
       relatedStrategy: [],
-      active: 0,
     };
   },
   methods: {
@@ -103,10 +101,13 @@ export default {
       allStrategies: (state) => state.Articles.allStrategies,
       hots: (state) => state.Articles.hots,
     }),
+    active() {
+      return this.initId;
+    },
   },
   watch: {
     // 监听active，更新strategies
-    active(newValue, oldValue) {
+    active(newValue) {
       this.resetRelatedStrategy(newValue);
     },
   },

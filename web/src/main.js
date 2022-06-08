@@ -21,6 +21,10 @@ import Card2 from "@/components/Card2.vue";
 Vue.component("c-card-2", Card2);
 import CountTime from "@/components/CountTime";
 Vue.component("c-time", CountTime);
+import CardCom from "@/components/CardCom";
+Vue.component("c-card-com", CardCom);
+import Rating from "@/components/Rating";
+Vue.component("c-rating", Rating);
 
 import { Dialog, Button, Input } from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
