@@ -96,17 +96,75 @@ npm run serve
 
 # 部分页面展示
 
-### 主页面
-
-
+## Web主页面
 
 ### 英雄详情页
 
-![image-20220607185716685](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607185716685.png)![image-20220607185750663](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607185750663.png)
+- 英雄皮肤展示
+- 英雄技能，属性，搭档，装备推荐及英雄攻略
+- 关联英雄页面跳转
 
-### 装备界面
+![heroDetail](https://github.com/Midwinter16/LOL/blob/master/images/s-hero.gif)
 
-![image-20220607191203934](https://github.com/Midwinter16/LOL/blob/master/images/image-20220607191203934.png)
+### 文章详情页
+
+- 文章标题和内容
+- 关联文章跳转
+
+![articleDetail](https://github.com/Midwinter16/LOL/blob/master/images/s-article.gif)
+
+### 攻略页面展示
+
+- 新闻根据阅读量排序
+- 根据是否置顶的攻略排序
+- 根据英雄相关攻略数量从多到少排序
+
+![Strategy](https://github.com/Midwinter16/LOL/blob/master/images/s-strategy.gif)
+
+### 装备页面展示
+
+- 装备详情
+- 过滤操作
+
+![equipDetail](https://github.com/Midwinter16/LOL/blob/master/images/s-equip.gif)
+
+### 符文页面
+
+- 符文分类和详情
+
+![runeDetail](https://github.com/Midwinter16/LOL/blob/master/images/s-rune.gif)
+
+### 比赛页面展示
+
+- 比分，队伍，队员以及比赛状态
+
+![web-match](https://github.com/Midwinter16/LOL/blob/master/images/web-match.png)
+
+## 后台界面展示
+
+### 登录页面以及部分主界面展示
+
+![back-login](https://github.com/Midwinter16/LOL/blob/master/images/back-login.png)
+
+![back-team](https://github.com/Midwinter16/LOL/blob/master/images/back-team.png)
+
+![back-match](https://github.com/Midwinter16/LOL/blob/master/images/back-match.png)
+
+![back-equip](https://github.com/Midwinter16/LOL/blob/master/images/back-equip.png)
+
+![back-article](https://github.com/Midwinter16/LOL/blob/master/images/back-article.png)
+
+![back-article-edit](https://github.com/Midwinter16/LOL/blob/master/images/back-article-edit.png)
+
+### 后台部分操作页面gif展示
+
+#### 新增英雄
+
+![newHero](https://github.com/Midwinter16/LOL/blob/master/images/s-newHero.gif)
+
+### 比赛状态管理
+
+![matchPage](https://github.com/Midwinter16/LOL/blob/master/images/s-matchPage.gif)
 
 # 更新日志
 
@@ -311,6 +369,8 @@ actions: {
 - 为英雄添加分路属性
 
 ## version1.2.8
+
+修复BUG
 
 ### web页面
 

@@ -76,6 +76,7 @@ export default {
       ],
       heroList: [],
       relatedStrategy: [],
+      active: 0,
     };
   },
   methods: {
@@ -101,9 +102,6 @@ export default {
       allStrategies: (state) => state.Articles.allStrategies,
       hots: (state) => state.Articles.hots,
     }),
-    active() {
-      return this.initId;
-    },
   },
   watch: {
     // 监听active，更新strategies
@@ -119,6 +117,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.resetRelatedStrategy(this.initId);
+      this.active = this.initId;
     }, 100);
   },
 };

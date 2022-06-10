@@ -298,6 +298,7 @@ export default {
           survive: 0,
         },
         skills: [],
+        partner: [],
       },
       categories: {},
       heroes: {},
